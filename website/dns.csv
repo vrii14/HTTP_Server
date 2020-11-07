@@ -1,0 +1,10 @@
+Packet Number, Source IP, Source Port, Destination IP, Destination Port, Transaction ID, Flags, Query Type," Total size of ""frame"" sent on the wire", Size of IP header, Size of UDP Header, Queried Host Name
+31,127.0.0.1,41660,127.0.0.53,53,0x92fd,0x0100,type A,76 bytes (608 bits),20 bytes,40,www.iisc.ac.in
+32,192.168.1.9,34288,192.168.1.1,53,0x17da,0x0100,type A,87 bytes (696 bits),20 bytes,51,www.iisc.ac.in
+33,192.168.1.1,53,192.168.1.9,34288,0x17da,0x8180,type A,103 bytes (824 bits),20 bytes,67,www.iisc.ac.in
+34,127.0.0.53,53,127.0.0.1,41660,0x92fd,0x8180,type A,2 bytes (736 bits),20 bytes,56,www.iisc.ac.in
+297,127.0.0.1,32962,127.0.0.53,53,0x7b18,0x0100,type MX,72 bytes (576 bits),20 bytes,36,riseup.net
+298,192.168.1.9,58631,192.168.1.1,53,0xec0e,0x0100,type MX,83 bytes (664 bits),20 bytes,47,riseup.net
+299,192.168.1.11,51688,192.168.1.255,15600,,,,82 bytes (656 bits),20 bytes,46,riseup.net
+300,192.168.1.1,53,192.168.1.9,58631,0xec0e,0x8180,type MX,119 bytes (952 bits),20 bytes,83,riseup.net
+301,127.0.0.53,53,127.0.0.1,32962,0x7b18,0x8180,type MX,92 bytes (736 bits),20 bytes,56,riseup.net

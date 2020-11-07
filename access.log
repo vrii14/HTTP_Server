@@ -1,0 +1,14 @@
+[2020-11-07 10:27:54,791]: 192.168.1.9: "GET / HTTP/1.1" 200 337 "Apache/2.4.41 (Ubuntu)"
+
+[2020-11-07 10:27:54,850]: 192.168.1.9: "GET /favicon.ico HTTP/1.1" 404 259 "Apache/2.4.41 (Ubuntu)"
+
+[2020-11-07 10:27:56,655]: 192.168.1.9: "GET /website/login.html HTTP/1.1" 200 5475 "Apache/2.4.41 (Ubuntu)"
+
+[2020-11-07 10:27:56,696]: 192.168.1.9: "GET /website/avatar.png HTTP/1.1" 200 46309 "Apache/2.4.41 (Ubuntu)"
+
+[2020-11-07 10:30:54,814]: 192.168.1.9: "GET / HTTP/1.1" 200 337 " Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36"
+
+[2020-11-07 10:30:56,371]: 192.168.1.9: "GET /website/login.html HTTP/1.1" 200 5475 " Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36"
+
+[2020-11-07 10:30:56,404]: 192.168.1.9: "GET /website/avatar.png HTTP/1.1" 200 46309 " Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36"
+

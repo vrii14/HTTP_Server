@@ -1,0 +1,45 @@
+<html>
+    <head>
+        <link rel="shortcut icon" href="">
+        <title>
+            Form try
+        </title>
+    </head>
+    <body bgcolor="#42f5c2">
+        <h3>Fill your details:</h3>
+        <hr>
+        <form action="form_get.html" method="GET">
+            <label for="name"><b>Your name:</b></label>
+            <input type="text" name = "name" />
+            <br><br>
+            <label for="age"><b>Your Age:</b></label>
+            <input type="text" name="age"/>
+            <br><br>
+            <label for="email"><b>Your email:</b></label>
+            <input type = "text" name = "email" />
+			<br><br>
+            <label for="password"><b>Your password:</b></label>
+            <input type = "password" name = "password" />
+			<br>
+			(Password must contain at least 8 characters)
+			<br>
+			<br>
+            <label for="gender"><b>Your Gender:</b></label><br>
+			<input type = "radio" name = "gender" value = "Male"> Male
+			<input type = "radio" name = "gender" value ="Female">Female
+			<br>
+         		<br>
+                <label for="game"><b>Choose favorite game:</b></label>
+         		<br>
+         		<select name = "game">
+            			<option value = "hockey" selected>Hockey</option>
+            			<option value = "badminton">Badminton</option>
+                        <option value = "cricket">Cricket</option>
+                        <option value="football">Football</option>
+         		</select>
+         	<br>
+         	<br>
+            <input type="submit" name="submit" value="Submit" />
+        </form>
+    </body>
+</html>
