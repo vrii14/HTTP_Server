@@ -354,3 +354,115 @@ game: Cricket
 
 [2020-11-08 11:27:48,598]: 192.168.1.104: 503: [client ('127.0.0.1', 60704)] Service Unavailable for request.
 
+[2020-11-08 13:31:51,779]: 192.168.1.9: "GET /try.html HTTP/1.1" 403 257 "Apache/2.4.41 (Ubuntu)"
+
+[2020-11-08 20:15:23,108]: 192.168.1.9: "PUT /new.html HTTP/1.1" 201 8 " PostmanRuntime/7.26.8"
+
+[2020-11-08 20:16:11,413]: 192.168.1.9: "DELETE /new.html HTTP/1.1" 200 8 " PostmanRuntime/7.26.8"
+
+[2020-11-08 20:17:37,282]: 192.168.1.9: POST Data: 
+
+ 
+[2020-11-08 20:17:37,282]: 192.168.1.9: "POST /website/dashboard.html HTTP/1.1" 200 2028 " python-requests/2.22.0"
+
+[2020-11-08 20:17:37,284]: 192.168.1.9: "GET /website/demo.jpg HTTP/1.1" 200 228954 " python-requests/2.22.0"
+
+[2020-11-08 20:17:37,287]: 192.168.1.9: "PUT /new1.html HTTP/1.1" 201 0 " python-requests/2.22.0"
+
+[2020-11-08 20:17:37,287]: 192.168.1.9: "GET /index.html HTTP/1.1" 200 337 " python-requests/2.22.0"
+
+[2020-11-08 20:17:37,287]: 192.168.1.9: "HEAD /website/login.html HTTP/1.1" 200 5475 " python-requests/2.22.0"
+
+[2020-11-08 20:17:37,291]: 192.168.1.9: "HEAD /website/old.html HTTP/1.1" 301 " python-requests/2.22.0"
+
+[2020-11-08 20:17:37,291]: 192.168.1.9: "HEAD /website/old.html HTTP/1.1" 400 273 " python-requests/2.22.0"
+
+[2020-11-08 20:17:37,294]: 192.168.1.9: "GET /website/demo.mp3 HTTP/1.1" 200 764176 " python-requests/2.22.0"
+
+[2020-11-08 20:17:37,297]: 192.168.1.9: "HEAD /try.pptx HTTP/1.1" 400 273 " python-requests/2.22.0"
+
+[2020-11-08 20:17:37,299]: 192.168.1.9: "HEAD /try.html HTTP/1.1" 403 257 " python-requests/2.22.0"
+
+[2020-11-08 20:17:37,306]: 192.168.1.9: "GET /website/dashboard.html HTTP/1.1" 200 2028 " python-requests/2.22.0"
+
+[2020-11-08 20:17:37,312]: 192.168.1.9: "GET /website/demo.pdf HTTP/1.1" 200 905204 " python-requests/2.22.0"
+
+[2020-11-08 20:17:37,317]: 192.168.1.9: "GET /index.html HTTP/1.1" 200 337 " python-requests/2.22.0"
+
+[2020-11-08 20:17:37,319]: 192.168.1.9: "GET /website/dashboard.html HTTP/1.1" 304 2028 " python-requests/2.22.0"
+
+[2020-11-08 20:17:37,321]: 192.168.1.9: "GET /website HTTP/1.1" 404 259 " python-requests/2.22.0"
+
+[2020-11-08 20:17:37,324]: 192.168.1.9: "GET /website/form_get.html?name=Vrinda+Ahuja&age=20&email=vrii%40gmail.com&password=testing321&gender=Female&game=Badminton HTTP/1.1" 414 281 " python-requests/2.22.0"
+
+[2020-11-08 20:17:37,591]: 192.168.1.9: POST Data: 
+name: Mrunal Kotkar
+age: 20
+email: xyz@gmail.com
+password: test
+gender: Female
+game: Cricket
+ 
+[2020-11-08 20:17:37,591]: 192.168.1.9: "POST /website/dashboard.html HTTP/1.1" 200 2028 " python-requests/2.22.0"
+
+[2020-11-08 20:20:28,742]: 192.168.1.9: "PUT /new1.html HTTP/1.1" 201 16 " PostmanRuntime/7.26.8"
+
+[2020-11-08 20:21:29,157]: 192.168.1.9: "PUT /hi.txt HTTP/1.1" 201 3 " PostmanRuntime/7.26.8"
+
+[2020-11-08 20:27:12,908]: 192.168.1.9: "PUT /hi.txt HTTP/1.1" 201 2 " PostmanRuntime/7.26.8"
+
+[2020-11-08 20:44:25,726]: 192.168.1.9: "PUT /hi.txt HTTP/1.1" 411 283 " PostmanRuntime/7.26.8"
+
+[2020-11-08 20:46:31,745]: 192.168.1.9: "PUT /hi.txt HTTP/1.1" 411 283 " PostmanRuntime/7.26.8"
+
+[2020-11-08 20:58:05,988]: 192.168.1.9: POST Data: 
+
+ 
+[2020-11-08 20:58:05,989]: 192.168.1.9: "GET /index.html HTTP/1.1" 200 337 " python-requests/2.22.0"
+
+[2020-11-08 20:58:05,989]: 192.168.1.9: "POST /website/dashboard.html HTTP/1.1" 200 2028 " python-requests/2.22.0"
+
+[2020-11-08 20:58:05,994]: 192.168.1.9: "HEAD /website/login.html HTTP/1.1" 200 5475 " python-requests/2.22.0"
+
+[2020-11-08 20:58:05,999]: 192.168.1.9: "HEAD /website/old.html HTTP/1.1" 301 " python-requests/2.22.0"
+
+[2020-11-08 20:58:06,000]: 192.168.1.9: "HEAD /website/old.html HTTP/1.1" 400 273 " python-requests/2.22.0"
+
+[2020-11-08 20:58:06,000]: 192.168.1.9: "PUT /new1.html HTTP/1.1" 400 273 " python-requests/2.22.0"
+
+[2020-11-08 20:58:06,001]: 192.168.1.9: "GET /website/demo.jpg HTTP/1.1" 200 228954 " python-requests/2.22.0"
+
+[2020-11-08 20:58:06,004]: 192.168.1.9: "GET /website/demo.mp3 HTTP/1.1" 200 764176 " python-requests/2.22.0"
+
+[2020-11-08 20:58:06,010]: 192.168.1.9: "GET /new1.html HTTP/1.1" 404 259 " python-requests/2.22.0"
+
+[2020-11-08 20:58:06,010]: 192.168.1.9: "HEAD /try.pptx HTTP/1.1" 400 273 " python-requests/2.22.0"
+
+[2020-11-08 20:58:06,016]: 192.168.1.9: "HEAD /try.html HTTP/1.1" 403 257 " python-requests/2.22.0"
+
+[2020-11-08 20:58:06,016]: 192.168.1.9: "DELETE /new1.html HTTP/1.1" 404 259 " python-requests/2.22.0"
+
+[2020-11-08 20:58:06,021]: 192.168.1.9: "GET /new1.html HTTP/1.1" 404 259 " python-requests/2.22.0"
+
+[2020-11-08 20:58:06,024]: 192.168.1.9: "GET /website/dashboard.html HTTP/1.1" 200 2028 " python-requests/2.22.0"
+
+[2020-11-08 20:58:06,028]: 192.168.1.9: "GET /website/demo.pdf HTTP/1.1" 200 905204 " python-requests/2.22.0"
+
+[2020-11-08 20:58:06,074]: 192.168.1.9: "GET /index.html HTTP/1.1" 200 337 " python-requests/2.22.0"
+
+[2020-11-08 20:58:06,077]: 192.168.1.9: "GET /website/dashboard.html HTTP/1.1" 304 2028 " python-requests/2.22.0"
+
+[2020-11-08 20:58:06,081]: 192.168.1.9: "GET /website HTTP/1.1" 404 259 " python-requests/2.22.0"
+
+[2020-11-08 20:58:06,085]: 192.168.1.9: "GET /website/form_get.html?name=Vrinda+Ahuja&age=20&email=vrii%40gmail.com&password=testing321&gender=Female&game=Badminton HTTP/1.1" 414 281 " python-requests/2.22.0"
+
+[2020-11-08 20:58:06,305]: 192.168.1.9: POST Data: 
+name: Mrunal Kotkar
+age: 20
+email: xyz@gmail.com
+password: test
+gender: Female
+game: Cricket
+ 
+[2020-11-08 20:58:06,307]: 192.168.1.9: "POST /website/dashboard.html HTTP/1.1" 200 2028 " python-requests/2.22.0"
+

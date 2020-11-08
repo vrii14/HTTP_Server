@@ -45,6 +45,11 @@ LOG_DIRECTORY = ROOT + "/logFiles"
 '''
 LOGFILE_TIME = 86400
 
+'''
+    Maximum payload length for request data (2 GB)
+'''
+MAX_PAYLOAD = 4294967296
+
 favicon = "/favicon.ico"
 FAVICON = ROOT + favicon
 
