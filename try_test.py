@@ -23,27 +23,18 @@ def get_requests():
 
     get_req_5 = requests.get(same_url_part + "/index.html", cookies = {'id': 'trying'})
     print("GET /index.html with cookies header: " + str(get_req_5.status_code))
-    # print(get_req_5.text)
-    # print(get_req_5.headers)
-
+  
     get_req_6 = requests.get(same_url_part + "/website/dashboard.html", headers={'If-Modified-Since': 'Wed, 4 Nov 2020 19:28:00 GMT'})
     print("GET /website/dashboard.html with If-Modified-Since header: " + str(get_req_6.status_code))
-    # print(get_req_6.text)
-    # print(get_req_6.headers)
 
     get_req_7 = requests.get(same_url_part + "/website")
     print("GET /website: " + str(get_req_7.status_code))
-    # print(get_req_7.text)
-    # print(get_req_7.headers)
 
     query = {'name':'Vrinda Ahuja', 'age':20, 'email':'vrii@gmail.com', 
          'password':'testing321', 'gender':'Female', 'game':'Badminton'}
     get_req_8 = requests.get(same_url_part + "/website/form_get.html", params=query)
     print("GET /website/form_get.html with url parameters of form data: " + str(get_req_8.status_code))
-    # print(req.status_code)
-    # print(req.text)
-    # print(req.headers)
-    # print(req.url)
+
 
 def post_requests():
     post_input_1 = {'name':'Vrinda Ahuja', 'age':20, 'email':'abc@gmail.com', 
@@ -70,13 +61,6 @@ def put_get_del_requests():
     get_requ_2 = requests.get(same_url_part + "/new1.html")
     print("GET /new1.html: " + str(get_requ_2.status_code))
 
-def put_requests():
-    put_req_1 = requests.put(same_url_part + "/try1.html", data ="Hello Creating file")
-    # time.sleep(3)
-    print("PUT /try1.html: " + str(put_req_1.status_code))
-    # put_req_2 = requests.put(same_url_part + "/try2.html", data ="Trying")
-    # # time.sleep(3)
-    # print("PUT /try2.html: " + str(put_req_2.status_code))
 
 
 def head_requests():
@@ -103,9 +87,6 @@ def main():
     get_thread = threading.Thread(target=get_requests)
     get_thread.start()
     
-    put_thread = threading.Thread(target=put_requests)
-    put_thread.start()
-    
     post_thread = threading.Thread(target=post_requests)
     post_thread.start()
 
@@ -121,7 +102,6 @@ def main():
     get_thread.join()
     post_thread.join()
     head_thread.join()
-    put_thread.join()
     multiple_thread.join()
     downloading_thread.join()
     

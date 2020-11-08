@@ -282,17 +282,17 @@ def put_headers(status_code, file_name, cookie_flag):
 	ToSend = f"HTTP/1.1 {status_code} {status_codes[status_code]}\nDate: "
 	date_time = parse_date_time()
 	ToSend += date_time
-	ToSend += "Server: Apache/2.4.41 (Ubuntu)\n"
-	content_type = get_content_type(file_name, "PUT")
-	ToSend += "Content-Type: "
-	ToSend += content_type
-	ToSend += "\nContent-Location: /"
+	# ToSend += "Server: Apache/2.4.41 (Ubuntu)\n"
+	# content_type = get_content_type(file_name, "PUT")
+	# ToSend += "Content-Type: "
+	# ToSend += content_type
+	ToSend += "Content-Location: /"
 	ToSend += file_name
 	if(cookie_flag == 0):
 		n = len(COOKIE_IDS)-1
 		index = random.randint(0, n) 
 		ToSend += f"\n{COOKIE}{COOKIE_IDS[index]}{MAXAGE}"
-	ToSend += "\nConnection:close\n\n"
+	ToSend += "\nConnection:keep-alive\n\n"
 	return ToSend
 
 def if_modified_since(header_day, file_name):
@@ -355,13 +355,14 @@ def clientfun(connectionSocket, serverPort, addr):
 		try:
 
 			sentence = connectionSocket.recv(1024).decode()
+			print(sentence)
 			start_time = datetime.datetime.now()
 						
 			thread.append(connectionSocket)
 			#print(thread)
 		
 			request = HTTPRequest(sentence)
-
+			# print(request)
 			try:
 				cookie_flag = 0
 				if(request.cookie != None):
@@ -520,7 +521,12 @@ def clientfun(connectionSocket, serverPort, addr):
 									if(os.path.isfile(PATH)):
 										if(os.access(PATH, os.R_OK) and os.access(PATH, os.W_OK)):
 											file_name = request.uri.strip('/')
-											f = open(file_name)
+											spl = file_name.split('.')
+											extension = spl[1]
+											if extension in direct_extensions:
+												f = open(file_name, 'rb')
+											else:
+												f = open(file_name, 'r')
 											text = f.read()
 											file_length = get_file_length(file_name)
 
