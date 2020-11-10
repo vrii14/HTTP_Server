@@ -51,7 +51,8 @@ def post_requests():
     time.sleep(0.3)
 
 def put_get_del_requests():
-    put_req = requests.put(same_url_part + "/new1.html", data ="Hi")
+    data = "<h1>Hi</h1>"
+    put_req = requests.put(same_url_part + "/new1.html", data =data)
     # time.sleep(0.3)
     print("PUT /new1.html: " + str(put_req.status_code))
     get_requ = requests.get(same_url_part + "/new1.html")
