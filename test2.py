@@ -19,7 +19,7 @@ def main():
     starttab(same_url_part + "/index.html")
     starttab(same_url_part + "/website/login.html")
     starttab(same_url_part + "/website/demo.jpg")
-    starttab(same_url_part + "/dummy.pdf")
+    starttab(same_url_part + "/website/demo.pdf")
     starttab(same_url_part + "/website/old.html")
     starttab(same_url_part + "/website/form.html")
 

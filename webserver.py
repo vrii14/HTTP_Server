@@ -151,7 +151,7 @@ def parse_modified_date(s):
 	#Thu, 01 Oct 2020 09:05:46 GMT
 	#Mon, 26 2020 14:03:03 GMT
 	modified_date = form[0]
-	modified_date += ", "
+	modified_date += ","
 	modified_date += form[2]
 	modified_date += " "
 	modified_date += form[1]
@@ -200,10 +200,12 @@ def get_headers(status_code, file_name, method, server, language, encoding, cook
 	ToSend += date_time
 	ToSend += "Server: "
 	ToSend += "Apache/2.4.41 (Ubuntu)"
-	
 	ToSend += "\r\nLast_Modified: "
+	s = time.ctime(os.path.getmtime(file_name))
+	last_modified = parse_modified_date(s)
+	ToSend += last_modified
 	if(status_code == 501):
-		ToSend += "Allow: HEAD,GET, POST, PUT, DELETE\n"
+		ToSend += "\nAllow: HEAD,GET, POST, PUT, DELETE"
 	file_name_copy = file_name
 	spl = file_name_copy.split('.')
 	extension = spl[1]
@@ -213,9 +215,6 @@ def get_headers(status_code, file_name, method, server, language, encoding, cook
 	else:
 		f = open(file_name)
 		text = f.read()
-	s = time.ctime(os.path.getmtime(file_name))
-	last_modified = parse_modified_date(s)
-	ToSend += last_modified
 	ToSend += "\n"
 	ToSend += "Accept-Ranges: bytes"
 	
@@ -226,10 +225,6 @@ def get_headers(status_code, file_name, method, server, language, encoding, cook
 	content_type = get_content_type(file_name, method)
 	ToSend += "\nContent-Type: "
 	ToSend += content_type
-	
-	#ToSend += "\nContent-Encoding: "
-	#ToSend += encoding
-	#if(extension not in direct_extensions):
 	ToSend += "\nContent-Length: "
 	ToSend += str(len(text))
 	if(cookie_flag == 0):
@@ -282,7 +277,6 @@ def delete_headers(status_code, file_name, method, server, cookie_flag):
 	ToSend += "\n"
 	# print(ToSend)
 	return ToSend
-
 
 
 def if_modified_since(header_day, file_name):
