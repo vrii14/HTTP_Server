@@ -1,6 +1,6 @@
 
-import try_test
+import test1
 import test2
 
-try_test.main()
+test1.main()
 test2.main()
