@@ -179,3 +179,22 @@ game: Cricket
 [2020-11-12 13:09:06,770]: 192.168.0.4: "DELETE /new8.html HTTP/1.1" 401 0 " PostmanRuntime/7.26.8"
 
 [2020-11-12 13:09:18,105]: 192.168.0.4: "DELETE /new8.html HTTP/1.1" 204 0 " PostmanRuntime/7.26.8"
+
+[2020-11-12 15:21:38,165]: 192.168.1.104: "GET /index.html HTTP/1.1" 200 337 "Apache/2.4.41 (Ubuntu)"
+
+[2020-11-12 15:21:38,166]: 192.168.1.104: "DELETE /new7.html HTTP/1.1" 404 259 " Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.183 Safari/537.36"
+
+[2020-11-12 15:21:38,166]: 192.168.1.104: "HEAD /index.html HTTP/1.1" 200 337 "Apache/2.4.41 (Ubuntu)"
+
+[2020-11-12 15:21:38,167]: 192.168.1.104: "PUT /new8.html HTTP/1.1" 201 5 " Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.183 Safari/537.36"
+
+[2020-11-12 15:21:38,168]: 192.168.1.104: "HEAD /index.html HTTP/2.1" 505 "Apache/2.4.41 (Ubuntu)"
+
+[2020-11-12 15:21:38,168]: 192.168.1.104: "HEAD /index.html HTTP/1.0" 200 337 "Apache/2.4.41 (Ubuntu)"
+
+[2020-11-12 15:21:38,168]: 192.168.1.104: [client ('127.0.0.1', 52980)] HTTP Version not Supported in Request HEAD /index.html HTTP/2.1 
+
+[2020-11-12 15:21:38,168]: 192.168.1.104: "PUT /new9.html HTTP/1.1" 201 260 " Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.183 Safari/537.36"
+
+[2020-11-12 15:21:38,170]: 192.168.1.104: "GET /demo.pptx HTTP/1.1" 404 259 "Apache/2.4.41 (Ubuntu)"
+
