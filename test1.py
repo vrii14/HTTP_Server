@@ -4,6 +4,8 @@ import threading
 import sys
 import os
 import time
+from requests.auth import HTTPBasicAuth
+from config import *
 
 port = sys.argv[1]
 
@@ -50,6 +52,15 @@ def post_requests():
     print("POST /website/dashboard.html: " + str(post_req_2.status_code))
     time.sleep(0.3)
 
+def put_img_del_auth_requests():
+    path = ROOT + '/website/demo.jpg'
+    headers = {'Content-type': 'image/jpeg'}
+    put_img_req = requests.put(same_url_part + "/demo.jpg", data=open(path, 'rb'), headers=headers)
+    print("PUT /demo.jpg: " + str(put_img_req.status_code))
+    delete_req = requests.delete(same_url_part + "/demo.jpg", auth = HTTPBasicAuth('MSK', 'msk1234'))
+    print("DELETE /demo.jpg: " + str(delete_req.status_code))
+    
+
 def put_get_del_requests():
     data = "<h1>Hi</h1>"
     put_req = requests.put(same_url_part + "/new1.html", data =data)
@@ -57,7 +68,7 @@ def put_get_del_requests():
     print("PUT /new1.html: " + str(put_req.status_code))
     get_requ = requests.get(same_url_part + "/new1.html")
     print("GET /new1.html: " + str(get_requ.status_code))
-    delete_req = requests.delete(same_url_part + "/new1.html")
+    delete_req = requests.delete(same_url_part + "/new1.html", auth = HTTPBasicAuth(USERNAME, PASSWORD))
     print("DELETE /new1.html: " + str(delete_req.status_code))
     get_requ_2 = requests.get(same_url_part + "/new1.html")
     print("GET /new1.html: " + str(get_requ_2.status_code))
@@ -100,11 +111,15 @@ def main():
     downloading_thread = threading.Thread(target=downloading_image)
     downloading_thread.start()
 
+    put_thread = threading.Thread(target=put_img_del_auth_requests)
+    put_thread.start()
+
     get_thread.join()
     post_thread.join()
     head_thread.join()
     multiple_thread.join()
     downloading_thread.join()
+    put_thread.join()
     
     
 if __name__ == "__main__":

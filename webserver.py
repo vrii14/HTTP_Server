@@ -9,6 +9,7 @@ import time		#if modified since header
 import logging	#log file
 from threading import Thread #multithreading
 from config import *	#config file
+import base64
 import random	#random values for cookies and retry after
 from urllib.parse import *	
 import gzip		#compressing the log files
@@ -23,7 +24,7 @@ months_to_numbers = {'Jan':'1', 'Feb':'2', 'Mar':'3','Apr':'4','May':'5','Jun':'
 					'Jul':'7','Aug':'8','Sep':'9','Oct':'10','Nov':'11','Dec':'12'}
 
 status_codes = {200:'OK', 201: 'Created', 204: 'No Content', 301: 'Moved Permanently',304: 'Not Modified',
-				400:'Bad Request', 403: 'Forbidden', 404:'Not Found', 408: 'Request Timeout',
+				400:'Bad Request', 401: 'Unauthorized', 403: 'Forbidden', 404:'Not Found', 408: 'Request Timeout',
 				411: 'Length Required', 413: 'Payload Too Large', 414: 'URI Too Long', 
 				415: 'Unsupported Media Type', 500: 'Internal Server Error', 501:'Not Implemented', 
 				503: 'Service Unavailable',	505:'HTTP Version not Supported'	
@@ -92,12 +93,13 @@ class HTTPRequest:
 		self.if_modified = None #if-modified-since header
 		self.cookie = None 
 		self.content_length = None # for status code 411 Length required
+		self.authorization = None
 		self.handle_request(data)
 
 
 	def handle_request(self, request):
 		lines = request.split('\r\n')
-		#print(lines)
+		# print(lines)
 		request_headers = {}
 
 		if_modified_since_substring = "If-Modified-Since"
@@ -119,6 +121,8 @@ class HTTPRequest:
 				self.cookie = request_headers['Cookie']
 			if('Content-Length' in request_headers.keys()):
 				self.content_length = request_headers['Content-Length'][1:]
+			if('Authorization' in request_headers.keys()):
+				self.authorization = request_headers['Authorization'][1:]
 			self.encoding = request_headers['Accept-Encoding']
 
 		self.request_line = lines[0]
@@ -130,6 +134,7 @@ class HTTPRequest:
 				
 		if(self.method == 'POST' or self.method == 'PUT'):
 			self.user_data = lines[-1]
+			# print(lines)
 
 		if len(words) > 2:
         		self.http_version = words[2]
@@ -184,9 +189,9 @@ def parse_date_time():
 	Returns:
 		Response of the request recieved(str)
 '''
-def get_headers(status_code, file_name, method, server, language, encoding, cookie_flag):
+def get_headers(status_code, file_name, method, server, language, encoding, cookie_flag, version):
 	
-	ToSend = f"HTTP/1.1 {status_code} {status_codes[status_code]}\nDate: "
+	ToSend = f"HTTP/{version} {status_code} {status_codes[status_code]}\nDate: "
 	date_time = parse_date_time()
 	ToSend += date_time
 	ToSend += "Server: "
@@ -252,9 +257,22 @@ def get_content_type(file_name, method):
 	content_type = content_types[extension]
 	return content_type
 
+#authorization credentials for delete request
+def authorization(credentials):
+	cred_list = credentials.split(' ')
+	auth_type = cred_list[0]
+	cred_list = base64.decodebytes(cred_list[1].encode()).decode()
+	username = cred_list.split(':')[0]
+	password = cred_list.split(':')[1]
+	if(username == USERNAME and password == PASSWORD):
+		return True
+	return False
+	
+
+
 # Response of delete requests
-def delete_headers(status_code, file_name, method, server, cookie_flag):
-	ToSend = f"HTTP/1.1 {status_code} {status_codes[status_code]}\nDate: "
+def delete_headers(status_code, file_name, method, server, cookie_flag, version):
+	ToSend = f"HTTP/{version} {status_code} {status_codes[status_code]}\nDate: "
 	date_time = parse_date_time()
 	ToSend += date_time
 	os.remove(file_name)
@@ -290,59 +308,59 @@ def if_modified_since(header_day, file_name):
 	return status_code
 
 # Response for put requests
-def put_headers(connectionSocket, status_code, file_name, file_data, f_flag, cookie_flag, content_length):
-    ToSend = f"HTTP/1.1 {status_code} {status_codes[status_code]}\nDate: "
-    date_time = parse_date_time()
-    ToSend += date_time
-    ToSend += "Server: Apache/2.4.41 (Ubuntu)\n"
-    content_type = get_content_type(file_name, "PUT")
-    ToSend += "Content-Type: "
-    ToSend += content_type
-    ToSend += "\nContent-Location: /"
-    filedata = b""
-    file_name = file_name[1:]
-    ToSend += file_name
+def put_headers(connectionSocket, status_code, file_name, file_data, f_flag, cookie_flag, content_length, version):
+	ToSend = f"HTTP/{version} {status_code} {status_codes[status_code]}\nDate: "
+	date_time = parse_date_time()
+	ToSend += date_time
+	ToSend += "Server: Apache/2.4.41 (Ubuntu)\n"
+	content_type = get_content_type(file_name, "PUT")
+	ToSend += "Content-Type: "
+	ToSend += content_type
+	ToSend += "\nContent-Location: /"
+	filedata = b""
+	file_name = file_name[1:]
+	ToSend += file_name
 
-    if f_flag == 0:
-        with open(file_name, 'w') as fp:
-            fp.write(file_data)
-        fp.close()
+	if f_flag == 0:
+		with open(file_name, 'w') as fp:
+			fp.write(file_data)
+		fp.close()
 
-    else:
-        if content_length:
-            length = content_length
-            q = int(int(length) // 8192)
-            r = int(length) % 8192
+	else:
+		if content_length:
+			length = content_length
+			q = int(int(length) // 8192)
+			r = int(length) % 8192
 
-            try:
-                filedata = filedata + file_data
-            except TypeError:
-                file_data = file_data.encode()
-                filedata = filedata + file_data	
+			try:
+				filedata = filedata + file_data
+			except TypeError:
+				file_data = file_data.encode()
+				filedata = filedata + file_data	
 
-            i = len(file_data)
-            size = int(length) - i
+			i = len(file_data)
+			size = int(length) - i
 
-            while size > 0:
-                file_data = connectionSocket.recv(8192)
-                try:
-                    filedata = filedata + file_data
-                except TypeError:
-                    file_data = file_data.encode()
-                    filedata = filedata + file_data
-                size = size - len(file_data)
-       
-        fp = open(file_name, "wb")
-        fp.write(filedata)
-        fp.close()
-        
-    if(cookie_flag == 0):
-        n = len(COOKIE_IDS)-1
-        index = random.randint(0, n) 
-        ToSend += f"\n{COOKIE}{COOKIE_IDS[index]}{MAXAGE}"
+			while size > 0:
+				file_data = connectionSocket.recv(8192)
+				try:
+					filedata = filedata + file_data
+				except TypeError:
+					file_data = file_data.encode()
+					filedata = filedata + file_data
+				size = size - len(file_data)
 
-    ToSend += "\nConnection:close\n\n"
-    return ToSend
+			fp = open(file_name, "wb")
+			fp.write(filedata)
+			fp.close()
+
+		if(cookie_flag == 0):
+			n = len(COOKIE_IDS)-1
+			index = random.randint(0, n) 
+			ToSend += f"\n{COOKIE}{COOKIE_IDS[index]}{MAXAGE}"
+
+	ToSend += "\nConnection:close\n\n"
+	return ToSend
 
 
 
@@ -402,6 +420,7 @@ def clientfun(connectionSocket, serverPort, addr):
 				
 				if len(req_list)>1:
 					ent_body = req_list[1]
+					# print(ent_body)
 				request = HTTPRequest(sentence)
 				
 			if(f_flag == 1):
@@ -409,7 +428,8 @@ def clientfun(connectionSocket, serverPort, addr):
 				
 			start_time = datetime.datetime.now()
 			thread.append(connectionSocket)
-			
+			version = request.http_version.split('/')[1]
+
 			try:
 				cookie_flag = 0
 				if(request.cookie != None):
@@ -419,16 +439,16 @@ def clientfun(connectionSocket, serverPort, addr):
 					
 					diff = end_time - start_time
 					minutes = diff / timedelta(minutes=1)
-					if(abs(minutes) > 0.1):
+					if(abs(minutes) > 0.3):
 						status_code = 408
 						file_name = "408_error.html"
-						ToSend = get_headers(status_code, file_name, request.method, request.server, request.language, request.encoding, cookie_flag)
+						ToSend = get_headers(status_code, file_name, request.method, request.server, request.language, request.encoding, cookie_flag, version)
 						connectionSocket.send(ToSend.encode())
 						file_length = get_file_length(file_name)
 						logging.info(f"{host_address}: \"{request.request_line}\" {status_code} {file_length} \"{request.server}\"\n")
 						connectionSocket.close()
 				
-				version = request.http_version.split('/')[1]
+				
 				if version not in versions:
 					status_code = 505
 					ToSend = f"{status_code} {status_codes[status_code]}\n\n"
@@ -449,7 +469,7 @@ def clientfun(connectionSocket, serverPort, addr):
 									if(PATH == REDIRECTED_PAGE):
 										status_code = 301
 										logging.info(f"{host_address}: \"{request.request_line}\" {status_code} \"{request.server}\"\n")
-										ToSend = f"HTTP/1.1 {status_code} {status_codes[status_code]}\n"
+										ToSend = f"HTTP/{version} {status_code} {status_codes[status_code]}\n"
 										ToSend += f"Location: http://127.0.0.1:{serverPort}/website/new.html \n"										
 										connectionSocket.send(ToSend.encode())
 
@@ -468,14 +488,20 @@ def clientfun(connectionSocket, serverPort, addr):
 													status_code = if_modified_since(request.if_modified, file_name)
 
 												if(request.method == "POST"):
-													print_post_data(request.user_data)
+													# print_post_data(request.user_data)
+													print_post_data(ent_body)
 
 												if(content_types.get(extension) == None):
 													status_code = 415
-													ToSend = f"HTTP/1.1 {status_code} {status_codes[status_code]} \n"
+													file_name = "415_error.html"
+													ToSend = f"HTTP/{version} {status_code} {status_codes[status_code]} \n"
 													ToSend += "Connection:close\n\n"
-													ToSend += "<h1> Unsupported Media Type </h1>"
+													# ToSend += "<h1> Unsupported Media Type </h1>"
+													fr = open(file_name, 'r')
+													data = fr.read()
+													ToSend += data
 													connectionSocket.send(ToSend.encode())
+													
 
 												else:
 													#other than html and txt
@@ -483,37 +509,37 @@ def clientfun(connectionSocket, serverPort, addr):
 														if(request.method != "HEAD"):
 															# modified
 															if(status_code != 304):
-																ToSend, data = get_headers(status_code, file_name, request.method, request.server, request.language, request.encoding, cookie_flag)
+																ToSend, data = get_headers(status_code, file_name, request.method, request.server, request.language, request.encoding, cookie_flag, version)
 																connectionSocket.send(ToSend.encode())
 																connectionSocket.send(data)
 															else:
-																ToSend = get_headers(status_code, file_name, request.method, request.server, request.language, request.encoding, cookie_flag)
+																ToSend = get_headers(status_code, file_name, request.method, request.server, request.language, request.encoding, cookie_flag, version)
 																connectionSocket.send(ToSend.encode())																
 														else:
-															ToSend = get_headers(status_code, file_name, request.method, request.server, request.language, request.encoding, cookie_flag)
+															ToSend = get_headers(status_code, file_name, request.method, request.server, request.language, request.encoding, cookie_flag, version)
 															connectionSocket.send(ToSend.encode())													
 													#html files
 													else:
-														ToSend = get_headers(status_code, file_name, request.method, request.server,  request.language, request.encoding, cookie_flag)
+														ToSend = get_headers(status_code, file_name, request.method, request.server,  request.language, request.encoding, cookie_flag, version)
 														connectionSocket.send(ToSend.encode())
 
 											else:
 												#forbidden file
 												status_code = 403
 												file_name = "403_error.html"	
-												ToSend = get_headers(status_code, file_name, request.method, request.server,  request.language, request.encoding, cookie_flag)
+												ToSend = get_headers(status_code, file_name, request.method, request.server,  request.language, request.encoding, cookie_flag, version)
 												connectionSocket.send(ToSend.encode())
 										else:
 											#file not found
 											status_code = 404
 											file_name = "404_error.html"
-											ToSend = get_headers(status_code, file_name, request.method, request.server,  request.language, request.encoding, cookie_flag)
+											ToSend = get_headers(status_code, file_name, request.method, request.server,  request.language, request.encoding, cookie_flag, version)
 											connectionSocket.send(ToSend.encode())
 								else:
 									#URI too long
 									status_code = 414
 									file_name = "414_error.html"
-									ToSend = get_headers(status_code, file_name, request.method, request.server, request.language, request.encoding, cookie_flag)
+									ToSend = get_headers(status_code, file_name, request.method, request.server, request.language, request.encoding, cookie_flag, version)
 									connectionSocket.send(ToSend.encode())
 							
 							file_length = get_file_length(file_name)
@@ -523,7 +549,7 @@ def clientfun(connectionSocket, serverPort, addr):
 							#Bad request
 							status_code = 400
 							file_name = "400_error.html"
-							ToSend = get_headers(status_code, file_name, request.method, request.server,  request.language, request.encoding, cookie_flag)	
+							ToSend = get_headers(status_code, file_name, request.method, request.server,  request.language, request.encoding, cookie_flag, version)	
 							connectionSocket.send(ToSend.encode())
 
 							file_length = get_file_length(file_name)
@@ -549,17 +575,27 @@ def clientfun(connectionSocket, serverPort, addr):
 											text = f.read()
 											file_length = get_file_length(file_name)
 											
-											if(int(len(text)) == 0):
-												# No Content
-												status_code = 204
-												ToSend = f"HTTP/1.1 {status_code} {status_codes[status_code]}\n\n"
-												os.remove(file_name)
-												connectionSocket.send(ToSend.encode())				
+											#if user is authorized
+											if(authorization(request.authorization)):
+												if(int(len(text)) == 0):
+													# No Content
+													status_code = 204
+													ToSend = f"HTTP/{version} {status_code} {status_codes[status_code]}\n\n"
+													os.remove(file_name)
+													connectionSocket.send(ToSend.encode())				
+												else:
+													#success
+													status_code = 200
+													ToSend = delete_headers(status_code, file_name, request.method, request.server, cookie_flag, version)
+													connectionSocket.send(ToSend.encode())
+											#user not authorized
 											else:
-												#success
-												status_code = 200
-												ToSend = delete_headers(status_code, file_name, request.method, request.server, cookie_flag)
-												connectionSocket.send(ToSend.encode())				
+												status_code = 401
+												ToSend = f"HTTP/{version} {status_code} {status_codes[status_code]}\nDate:"
+												date_time = parse_date_time()
+												ToSend += date_time
+												ToSend += "WWW-Authenticate: Basic realm=\"Access to staging site\", charset=\"UTF-8\""
+												connectionSocket.send(ToSend.encode())		
 
 										else:
 											#forbidden file
@@ -567,7 +603,7 @@ def clientfun(connectionSocket, serverPort, addr):
 											file_name = "403_error.html"	
 											file_length = get_file_length(file_name)
 
-											ToSend = get_headers(status_code, file_name, request.method, request.server,  request.language, request.encoding, cookie_flag)
+											ToSend = get_headers(status_code, file_name, request.method, request.server,  request.language, request.encoding, cookie_flag, version)
 											connectionSocket.send(ToSend.encode())
 
 									else:									
@@ -576,7 +612,7 @@ def clientfun(connectionSocket, serverPort, addr):
 										file_name = "404_error.html"
 										file_length = get_file_length(file_name)
 
-										ToSend = get_headers(status_code, file_name, request.method, request.server,  request.language, request.encoding, cookie_flag)
+										ToSend = get_headers(status_code, file_name, request.method, request.server,  request.language, request.encoding, cookie_flag, version)
 										connectionSocket.send(ToSend.encode())
 								
 								else:
@@ -585,7 +621,7 @@ def clientfun(connectionSocket, serverPort, addr):
 									file_name = "414_error.html"
 									file_length = get_file_length(file_name)
 
-									ToSend = get_headers(status_code, file_name, request.method, request.server, request.language, request.encoding, cookie_flag)
+									ToSend = get_headers(status_code, file_name, request.method, request.server, request.language, request.encoding, cookie_flag, version)
 
 									connectionSocket.send(ToSend.encode())
 							
@@ -594,10 +630,10 @@ def clientfun(connectionSocket, serverPort, addr):
 					
 						except:
 							#Bad request
-							print("except")
+							# print("except")
 							status_code = 400
 							file_name = "400_error.html"
-							ToSend = get_headers(status_code, file_name, request.method, request.server,  request.language, request.encoding, cookie_flag)			
+							ToSend = get_headers(status_code, file_name, request.method, request.server,  request.language, request.encoding, cookie_flag, version)			
 							connectionSocket.send(ToSend.encode())
 
 							file_length = get_file_length(file_name)
@@ -622,49 +658,53 @@ def clientfun(connectionSocket, serverPort, addr):
 													#success
 													status_code = 200
 													os.remove(file_name)
-													ToSend = put_headers(connectionSocket, status_code, request.uri, ent_body, f_flag, cookie_flag, request.content_length)
+													ToSend = put_headers(connectionSocket, status_code, request.uri, ent_body, f_flag, cookie_flag, request.content_length, version)
 													connectionSocket.send(ToSend.encode())
 
 												else:
 													#forbidden file
 													status_code = 403
 													file_name = "403_error.html"
-													ToSend = get_headers(status_code, file_name, request.method, request.server,  request.language, request.encoding, cookie_flag)
+													ToSend = get_headers(status_code, file_name, request.method, request.server,  request.language, request.encoding, cookie_flag, version)
 													connectionSocket.send(ToSend.encode())
 											
 											else:
 												#new file created
 												status_code = 201
-												ToSend = put_headers(connectionSocket, status_code, request.uri, ent_body, f_flag, cookie_flag, request.content_length)
+												ToSend = put_headers(connectionSocket, status_code, request.uri, ent_body, f_flag, cookie_flag, request.content_length, version)
 												connectionSocket.send(ToSend.encode())
 										else:
 											#payload too large
 											status_code = 413
 											file_name = "413_error.html"
-											ToSend = get_headers(status_code, file_name, request.method, request.server,  request.language, request.encoding, cookie_flag)
+											ToSend = get_headers(status_code, file_name, request.method, request.server,  request.language, request.encoding, cookie_flag, version)
 											connectionSocket.send(ToSend.encode())
 									else:
 										#length required
 										status_code = 411
 										file_name = "411_error.html"
-										ToSend = get_headers(status_code, file_name, request.method, request.server,  request.language, request.encoding, cookie_flag)
+										ToSend = get_headers(status_code, file_name, request.method, request.server,  request.language, request.encoding, cookie_flag, version)
 										connectionSocket.send(ToSend.encode())
 										
 								else:
 									#URI too long
 									status_code = 414
 									file_name = "414_error.html"
-									ToSend = get_headers(status_code, file_name, request.method, request.server, request.language, request.encoding, cookie_flag)
+									ToSend = get_headers(status_code, file_name, request.method, request.server, request.language, request.encoding, cookie_flag, version)
 									connectionSocket.send(ToSend.encode())
+									file_length = get_file_length(file_name)
+									logging.info(f"{host_address}: \"{request.request_line}\" {status_code} {file_length} \"{request.server}\"\n")
+								
 
 								file_length = get_file_length(file_name)
 								logging.info(f"{host_address}: \"{request.request_line}\" {status_code} {file_length} \"{request.server}\"\n")
+								# print("logging")
 
 						except:
 							#Bad request
 							status_code = 400
 							file_name = "400_error.html"
-							ToSend = get_headers(status_code, file_name, request.method, request.server,  request.language, request.encoding, cookie_flag)			
+							ToSend = get_headers(status_code, file_name, request.method, request.server,  request.language, request.encoding, cookie_flag, version)			
 							connectionSocket.send(ToSend.encode())
 							
 							file_length = get_file_length(file_name)
@@ -676,7 +716,7 @@ def clientfun(connectionSocket, serverPort, addr):
 
 						status_code = 501
 						file_name = "501_error.html"
-						ToSend = get_headers(status_code, file_name, request.method, request.server,  request.language, request.encoding, cookie_flag)
+						ToSend = get_headers(status_code, file_name, request.method, request.server,  request.language, request.encoding, cookie_flag, version)
 						connectionSocket.send(ToSend.encode())
 
 						file_length = get_file_length(file_name)
