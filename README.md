@@ -21,19 +21,19 @@
 ## Project features:  
 
 1. **HTTP Request Methods Implemented**:
-        - *GET* 
-        - *HEAD*
-        - *POST*
-        - *PUT*
-        - *DELETE*
+- *GET* 
+- *HEAD*
+- *POST*
+- *PUT*
+- *DELETE*
 2. **Config file**: Implemented configuration file with Document Root for some functionalities of server.
 3. **Multithreading in server**: Implemented multithreading in server to run multiple requests simultaneously
 4. **Logging**:
-        - *Levels of Logging* - Implemented INFO and ERROR levels of logging for the log file 
-        - *Folder (Logfiles)* - Compression of logfiles and moving them to a folder sequentially after a      particular time
+- *Levels of Logging* - Implemented INFO and ERROR levels of logging for the log file 
+- *Folder (Logfiles)* - Compression of logfiles and moving them to a folder sequentially after a      particular time
 5. **Automated Tests**: 
-        - *Test1* - Implemented different tests using multithreading and requests module 
-        - *Test2* - Implemented different tests for sample website using webbrowser module
-        - *Test3* - Implemented different tests using socket programming and threading by manually creating requests.
-        - *Testing* - Combined tests of all the three testfiles.
+- *Test1* - Implemented different tests using multithreading and requests module 
+- *Test2* - Implemented different tests for sample website using webbrowser module
+- *Test3* - Implemented different tests using socket programming and threading by manually creating requests.
+- *Testing* - Combined tests of all the three testfiles.
 6. **Implemented Cookies and handled Persistent and non-Persistent connections**
