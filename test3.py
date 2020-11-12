@@ -71,13 +71,31 @@ def version_not_supported():
     print('---HEAD /index.html HTTP/2.1---\n\n',response.decode())
     clientSocket.close()
 
+def length_required():
+    clientSocket = socket(AF_INET, SOCK_STREAM)
+    clientSocket.connect((serverName,serverPort))
+    request = "PUT /new8.html HTTP/1.1\r\nHost: 127.0.0.1:1234\r\nConnection: keep-alive\r\nAuthorization: Basic VkFNSzp2YW1rMTQxMA==\r\nPostman-Token: 0d50bc71-239b-7c7f-31d7-c246a410e788\r\nCache-Control: no-cache\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.183 Safari/537.36\r\nContent-Type: text/plain;charset=UTF-8\r\nAccept: */*\r\nOrigin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop\r\nSec-Fetch-Site: none\r\nSec-Fetch-Mode: cors\r\nSec-Fetch-Dest: empty\r\nAccept-Encoding: gzip, deflate, br\r\nAccept-Language: en-US,en;q=0.9\r\n\r\nHello"
+    clientSocket.send(request.encode())
+    response = clientSocket.recv(1024)
+    print('---PUT /new8.html HTTP/1.1 without content length---\n\n',response.decode())
+    clientSocket.close()
+
+def method_not_implemented():
+    clientSocket = socket(AF_INET, SOCK_STREAM)
+    clientSocket.connect((serverName,serverPort))
+    request = "GETT /index.html HTTP/1.1"
+    clientSocket.send(request.encode())
+    response = clientSocket.recv(1024)
+    print('---GETT /index.html HTTP/1.1---\n\n',response.decode())
+    clientSocket.close()
+
 def unsupported_media_type():
     clientSocket = socket(AF_INET, SOCK_STREAM)
     clientSocket.connect((serverName,serverPort))
-    request = "GET /try.pptx HTTP/1.1"
+    request = "GET /demo.pptx HTTP/1.1"
     clientSocket.send(request.encode())
     response = clientSocket.recv(1024)
-    print('---GET /try.pptx HTTP/1.1---\n\n',response.decode())
+    print('---GET /demo.pptx HTTP/1.1---\n\n',response.decode())
     clientSocket.close()
     
 def main():
@@ -105,6 +123,12 @@ def main():
     unsupported_media_type_thread = threading.Thread(target=unsupported_media_type)
     unsupported_media_type_thread.start()
 
+    length_required_thread = threading.Thread(target=length_required)
+    length_required_thread.start()
+
+    method_not_implemented_thread = threading.Thread(target=method_not_implemented)
+    method_not_implemented_thread.start()
+
     get_thread.join()
     non_persistent_thread.join()
     head_thread.join()
@@ -113,8 +137,11 @@ def main():
     file_put_thread.join()
     version_not_supported_thread.join()
     unsupported_media_type_thread.join()
+    length_required_thread.join()
+    method_not_implemented_thread.join()
     
     
 
 if __name__ == "__main__":
     main()
+
